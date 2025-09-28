@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Conditions</title>
+<style>
+body { font-family: Arial,sans-serif; margin:0; padding:20px; background:#f1f1f1; }
+.terms-container { max-width:600px; margin:50px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.2); }
+h2 { color:#001F3F; }
+p { font-size:14px; margin:10px 0; }
+.agree { display:flex; align-items:center; margin-top:20px; gap:10px; }
+button { padding:10px 20px; background:#001F3F; color:#fff; border:none; border-radius:5px; cursor:pointer; }
+button:hover { background:#FF7F50; }
+</style>
+</head>
+<body>
+<div class="terms-container">
+  <h2>Terms & Conditions</h2>
+  <p>Welcome to our platform! By using this website, you agree to abide by the school’s policies and our service terms.</p>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec gravida metus nec ex commodo, ac fermentum sapien tristique.</p>
+
+  <div class="agree">
+    <input type="checkbox" id="agreeCheckbox">
+    <label for="agreeCheckbox">I agree to the Terms & Conditions</label>
+  </div>
+  <button onclick="acceptTerms()">Continue</button>
+</div>
+
+<script>
+function acceptTerms(){
+  const checkbox = document.getElementById("agreeCheckbox");
+  if(!checkbox.checked){
+    alert("You must agree to continue.");
+    return;
+  }
+
+  let user = JSON.parse(localStorage.getItem('currentUser'));
+  user.agreed = true;
+  localStorage.setItem('currentUser', JSON.stringify(user));
+  localStorage.setItem(user.email, "true"); // remember agreed
+
+  window.location.href = "index.html"; // go to homepage
+}
+</script>
+</body>
+</html>

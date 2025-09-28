@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lanyards</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #333;
+    }
+
+    /* Header Bar */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2C2C54;
+      color: white;
+      padding: 12px 15px;
+      border-bottom: 4px solid transparent;
+      position: relative;
+    }
+
+    /* Double border line effect */
+    .header::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -4px;
+      height: 4px;
+      background: linear-gradient(to bottom, white 2px, transparent 2px, transparent 4px, white 4px);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Back Button */
+    .back-btn {
+      background: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    .back-btn i {
+      color: #F4A300;
+      font-size: 20px;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .header-icons a {
+      color: white;
+      font-size: 20px;
+      text-decoration: none;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product-card {
+      text-align: left;
+    }
+
+    .product-card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    /* Image box with 1:1 ratio */
+    .image-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 1px solid #333;
+      border-radius: 10px;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Product Details */
+    .product-name {
+      margin: 8px 0 2px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .price {
+      color: #555;
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .rating {
+      font-size: 13px;
+      color: #555;
+    }
+
+    .rating i {
+      color: #FFB400;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <a href="index.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+      <span class="header-title">LANYARDS</span>
+    </div>
+    <div class="header-icons">
+      <a href="#"><i class="fas fa-search"></i></a>
+      <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+    </div>
+  </header>
+
+  <!-- Products -->
+  <section class="product-grid">
+    <div class="product-card">
+      <a href="product-details-lanyard.html?id=lanyard1">
+        <div class="image-box">
+          <img src="lanyard1.jpg" alt="Blue Lanyard">
+        </div>
+        <p class="product-name">Blue Lanyard</p>
+        <span class="price">₱120.00</span>
+        <p class="rating"><i class="fas fa-star"></i> 0.0 | 0 sold</p>
+      </a>
+    </div>
+
+    <div class="product-card">
+      <a href="product-details-lanyard.html?id=lanyard2">
+        <div class="image-box">
+          <img src="lanyard2.jpg" alt="BUCIT Lanyard">
+        </div>
+        <p class="product-name">BUCIT Lanyard</p>
+        <span class="price">₱150.00</span>
+        <p class="rating"><i class="fas fa-star"></i> 0.0 | 0 sold</p>
+      </a>
+    </div>
+
+    <div class="product-card">
+      <a href="product-details-lanyard.html?id=lanyard3">
+        <div class="image-box">
+          <img src="lanyard3.jpg" alt="BUCL Lanyard">
+        </div>
+        <p class="product-name">BUCL Lanyard</p>
+        <span class="price">₱100.00</span>
+        <p class="rating"><i class="fas fa-star"></i> 0.0 | 0 sold</p>
+      </a>
+    </div>
+
+    <div class="product-card">
+      <a href="product-details-lanyard.html?id=lanyard4">
+        <div class="image-box">
+          <img src="lanyard4.jpg" alt="BUCN Lanyard">
+        </div>
+        <p class="product-name">BUCN Lanyard</p>
+        <span class="price">₱130.00</span>
+        <p class="rating"><i class="fas fa-star"></i> 0.0 | 0 sold</p>
+      </a>
+    </div>
+  </section>
+</body>
+</html>

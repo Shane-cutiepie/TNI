@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- QR Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <style>
+    body { margin:0; font-family:'Poppins',sans-serif; background:#f1f1f1; color:#333; }
+    header { display:flex; align-items:center; justify-content:space-between; padding:10px 15px; background:#001F3F; color:#fff; }
+    header img { width:40px; height:40px; }
+    .icons a { color:white; }
+    .icons i { font-size:22px; transition:.2s; }
+    .icons i:hover { transform:scale(1.2); color:#FF7F50; }
+    section { padding:20px; }
+    h2 { color:#001F3F; }
+    footer { position:fixed; bottom:0; width:100%; background:#001F3F; display:flex; justify-content:space-around; padding:8px 0; }
+    footer a { color:#fff; font-size:12px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:3px; }
+    footer i { font-size:22px; transition:.2s; }
+    footer a:hover i { transform:scale(1.2); color:#FF7F50; }
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+      border: 2px solid #001F3F;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #result {
+      margin-top: 15px;
+      padding: 12px;
+      background: #fff;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      color: #001F3F;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo">
+    <h2>Scan Products</h2>
+    <div class="icons"><a href="index.html"><i class="fas fa-home"></i></a></div>
+  </header>
+
+  <section>
+    <h2>Scan QR Code</h2>
+    <div id="reader"></div>
+    <div id="result">No QR code scanned yet.</div>
+  </section>
+
+  <footer>
+    <a href="scan.html"><i class="fas fa-qrcode"></i><span>Scan</span></a>
+    <a href="chat.html"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
+    <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="alerts.html"><i class="fas fa-bell"></i><span>Alerts</span></a>
+    <a href="bag.html"><i class="fas fa-bag-shopping"></i><span>Bag</span></a>
+  </footer>
+
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      document.getElementById("result").innerText = `Scanned: ${decodedText}`;
+      // Example: if your QR contains product ID, redirect to product page
+      // window.location.href = `product-details.html?id=${decodedText}`;
+    }
+
+    function onScanError(errorMessage) {
+      // console.log(errorMessage); // keep silent for now
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader",
+      { fps: 10, qrbox: 250 }
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { margin:0; font-family:'Poppins',sans-serif; background:#f1f1f1; display:flex; justify-content:center; align-items:center; height:100vh; }
+.signup-container { background:#fff; padding:30px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:400px; text-align:center; }
+.signup-container h2 { margin-bottom:20px; color:#001F3F; }
+.form-group { margin-bottom:15px; text-align:left; }
+label { font-weight:500; font-size:14px; display:block; margin-bottom:5px; }
+input { width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:'Poppins',sans-serif; }
+button { width:100%; padding:12px; background:#001F3F; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; transition: background 0.3s; }
+button:hover { background:#FF7F50; }
+.login-link { margin-top:15px; font-size:14px; }
+.login-link a { color:#FF7F50; text-decoration:none; font-weight:500; }
+</style>
+</head>
+<body>
+<div class="signup-container">
+  <h2><i class="fas fa-user-plus"></i> Sign Up</h2>
+  <form id="signupForm">
+    <div class="form-group">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" placeholder="Enter your full name" required>
+    </div>
+    <div class="form-group">
+      <label for="email">School Email</label>
+      <input type="email" id="email" placeholder="e.g. student@school.edu.ph" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Create a password" required>
+    </div>
+    <div class="form-group">
+      <label for="confirm">Confirm Password</label>
+      <input type="password" id="confirm" placeholder="Confirm password" required>
+    </div>
+    <button type="submit">Sign Up</button>
+  </form>
+  <div class="login-link">
+    Already have an account? <a href="login.html">Login</a>
+  </div>
+</div>
+
+<script>
+document.getElementById("signupForm").addEventListener("submit", function(event){
+  event.preventDefault();
+  const fullname = document.getElementById("fullname").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const confirm = document.getElementById("confirm").value;
+
+  if(!email.endsWith("@school.edu.ph")){
+    alert("Please use your school email (example: student@school.edu.ph).");
+    return;
+  }
+  if(password !== confirm){
+    alert("Passwords do not match.");
+    return;
+  }
+
+  // Simulate signup
+  let user = { fullname: fullname, email: email, agreed: false };
+  localStorage.setItem('currentUser', JSON.stringify(user));
+
+  window.location.href = "terms.html"; // go to terms first
+});
+</script>
+</body>
+</html>
