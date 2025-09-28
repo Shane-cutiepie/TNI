@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 15px;
+      background: #001F3F;
+      color: white;
+    }
+    header img { width: 40px; height: 40px; }
+    header h2 { font-size: 20px; margin: 0; }
+    .icons a { color: white; font-size: 22px; }
+
+    .checkout-container {
+      max-width: 900px;
+      margin: 20px auto 80px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #001F3F;
+      text-align: center;
+    }
+
+    .buyer-info {
+      margin-bottom: 20px;
+    }
+    .buyer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 8px 0;
+    }
+    .buyer-row span {
+      font-size: 16px;
+      font-weight: 500;
+      color: #001F3F;
+    }
+    .buyer-row button {
+      background: none;
+      border: none;
+      color: #0074D9;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .buyer-row input {
+      display: none;
+      width: 100%;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .checkout-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .checkout-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 12px;
+    }
+    .item-details {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    .item-info h4 { margin: 0 0 3px; font-size: 15px; color: #001F3F; }
+    .item-info p { margin: 0; font-size: 14px; color: #555; }
+
+    .payment-options {
+      margin-top: 20px;
+    }
+    .payment-options h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #001F3F;
+    }
+    .payment-options label {
+      display: block;
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    .checkout-total {
+      margin-top: 15px;
+      text-align: right;
+      font-size: 18px;
+      font-weight: 600;
+    }
+.checkout-button-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.checkout-btn {
+  display: block;
+  width: 62%;
+  margin: 20px auto;   /* ✅ auto left & right centers the button */
+  background: #FF851B;
+  color: white;
+  border: none;
+  padding: 14px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.checkout-btn:hover { 
+  background: #FF6300; 
+}
+   footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #001F3F;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+    }
+    footer a {
+      color: #fff;
+      font-size: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    footer i {
+      font-size: 22px;
+      transition: .2s;
+    }
+    footer a:hover i {
+      transform: scale(1.2);
+      color: #FF7F50;
+    }
+    .section-title {
+    margin-top: 20px;
+    color: #001F3F;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .ewallet-suboptions {
+    display: none;
+    margin-left: 25px;
+    font-size: 0.9em;
+  }
+
+  .otp-section {
+    display: none;
+    margin-top: 15px;
+  }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo">
+    <h2>Checkout</h2>
+    <div class="icons">
+  <a href="cart.html" title="Back to Cart">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+</div>
+  </header>
+  <div class="checkout-container">
+    <h2>Checkout Details</h2>
+
+    <!-- Buyer Info -->
+    <div class="buyer-info">
+      <div class="buyer-row">
+        <span id="display-name">Juan Dela Cruz</span>
+        <input type="text" id="buyer-name" value="Juan Dela Cruz">
+        <button onclick="editField('name')"><i class="fas fa-pencil-alt"></i> Edit</button>
+      </div>
+      <div class="buyer-row">
+        <span id="display-campus">Main Campus</span>
+        <input type="text" id="buyer-campus" value="Main Campus">
+        <button onclick="editField('campus')"><i class="fas fa-pencil-alt"></i> Edit</button>
+      </div>
+    </div>
+
+    <h3 class="section-tilte">Your Items</h3>
+    <div id="checkout-items"></div>
+
+    <div class="checkout-total">
+      <p>Total: ₱<span id="checkout-total">0.00</span></p>
+    </div>
+    
+<<!-- Payment Options -->
+<div class="payment-options">
+  <h3>Payment Options</h3>
+  <label><input type="radio" name="payment" value="Cash"> Cash</label>
+  <label><input type="radio" name="payment" value="EWallet" id="ewallet-option"> E-Wallet</label>
+</div>
+
+
+  <!-- Sub-options for E-Wallet -->
+  <div id="ewallet-suboptions" >
+    <label><input type="radio" name="ewallet" value="GCash" id="gcash-option"> GCash</label><br>
+    <label><input type="radio" name="ewallet" value="Maya" id="maya-option"> Maya</label>
+  </div>
+</div>
+
+<!-- GCash Popup Modal -->
+<div id="gcash-modal" class="modal">
+  <div class="modal-box">
+    <span class="close" id="gcash-close">&times;</span>
+    <h3>GCash Payment</h3>
+
+
+    <form id="gcash-form">
+      <label for="gcash-name">Account Name:</label><br>
+      <input type="text" id="gcash-name" required><br><br>
+
+      <label for="gcash-number">GCash Number:</label><br>
+      <input type="text" id="gcash-number" required><br><br>
+
+      <button type="button" id="gcash-send-otp">Send OTP</button>
+    </form>
+
+
+    <div id="gcash-otp-section" class="otp-section">
+      <label for="gcash-otp">Enter OTP:</label><br>
+      <input type="text" id="gcash-otp" placeholder="Enter 6-digit OTP"><br><br>
+      <button type="button" id="gcash-verify-otp">Verify OTP</button>
+    </div>
+  </div>
+</div>
+
+<div id="maya-modal" class="modal">
+  <div class="modal-box">
+    <span class="close" id="maya-close">&times;</span>
+    <h3>Maya Payment</h3>
+
+    <form id="maya-form">
+      <label for="maya-name">Account Name:</label><br>
+      <input type="text" id="maya-name" required><br><br>
+
+      <label for="maya-number">Maya Number:</label><br>
+      <input type="text" id="maya-number" required><br><br>
+
+      <button type="button" id="maya-send-otp">Send OTP</button>
+    </form>
+
+    <!-- Step 2 -->
+    <div id="maya-otp-section" >
+      <label for="maya-otp">Enter OTP:</label><br>
+      <input type="text" id="maya-otp" placeholder="Enter 6-digit OTP"><br><br>
+      <button type="button" id="maya-verify-otp">Verify OTP</button>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Modal overlay */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+/* Small popup box */
+.modal-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 320px;
+  max-width: 90%;
+  margin: 120px auto;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Close button */
+.close {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Inputs */
+.modal-box input {
+  width: 90%;
+  padding: 8px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+/* Orange button */
+.modal-box button {
+  margin-top: 12px;
+  padding: 10px 15px;
+  border: none;
+  background: #FF851B;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+}
+.modal-box button:hover {
+  background: #FF6300;
+}
+</style>
+
+<script>
+const ewalletOption = document.getElementById("ewallet-option");
+const ewalletSuboptions = document.getElementById("ewallet-suboptions");
+
+// Hide sub-options initially
+ewalletSuboptions.style.display = "none";
+
+// Show or hide sub-options when payment changes
+document.querySelectorAll('input[name="payment"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (ewalletOption.checked) {
+      ewalletSuboptions.style.display = "block";
+    } else {
+      ewalletSuboptions.style.display = "none";
+    }
+  });
+});
+
+/* ---------- GCash ---------- */
+const gcashModal = document.getElementById("gcash-modal");
+const gcashClose = document.getElementById("gcash-close");
+const gcashOption = document.getElementById("gcash-option");
+const gcashSendOtp = document.getElementById("gcash-send-otp");
+const gcashOtpSection = document.getElementById("gcash-otp-section");
+const gcashVerifyOtp = document.getElementById("gcash-verify-otp");
+
+let gcashOtp = "";
+
+gcashOption.addEventListener("change", () => {
+  if (gcashOption.checked) gcashModal.style.display = "block";
+});
+
+gcashClose.onclick = () => gcashModal.style.display = "none";
+
+gcashSendOtp.onclick = () => {
+  let name = document.getElementById("gcash-name").value.trim();
+  let number = document.getElementById("gcash-number").value.trim();
+
+  if (!name || !number) {
+    alert("Please enter your GCash Name and Number.");
+    return;
+  }
+
+  gcashOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  alert("OTP sent to " + number + "\n(For demo: " + gcashOtp + ")");
+  gcashOtpSection.style.display = "block";
+};
+
+gcashVerifyOtp.onclick = () => {
+  let enteredOtp = document.getElementById("gcash-otp").value.trim();
+  if (enteredOtp === gcashOtp) {
+    alert("✅ GCash Payment Verified!");
+    gcashModal.style.display = "none";
+  } else {
+    alert("❌ Incorrect OTP. Try again.");
+  }
+};
+
+/* ---------- Maya ---------- */
+const mayaModal = document.getElementById("maya-modal");
+const mayaClose = document.getElementById("maya-close");
+const mayaOption = document.getElementById("maya-option");
+const mayaSendOtp = document.getElementById("maya-send-otp");
+const mayaOtpSection = document.getElementById("maya-otp-section");
+const mayaVerifyOtp = document.getElementById("maya-verify-otp");
+
+let mayaOtp = "";
+
+mayaOption.addEventListener("change", () => {
+  if (mayaOption.checked) mayaModal.style.display = "block";
+});
+
+mayaClose.onclick = () => mayaModal.style.display = "none";
+
+mayaSendOtp.onclick = () => {
+  let name = document.getElementById("maya-name").value.trim();
+  let number = document.getElementById("maya-number").value.trim();
+
+  if (!name || !number) {
+    alert("Please enter your Maya Name and Number.");
+    return;
+  }
+
+  mayaOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  alert("OTP sent to " + number + "\n(For demo: " + mayaOtp + ")");
+  mayaOtpSection.style.display = "block";
+};
+
+mayaVerifyOtp.onclick = () => {
+  let enteredOtp = document.getElementById("maya-otp").value.trim();
+  if (enteredOtp === mayaOtp) {
+    alert("✅ Maya Payment Verified!");
+    mayaModal.style.display = "none";
+  } else {
+    alert("❌ Incorrect OTP. Try again.");
+  }
+};
+</script>
+
+    <!-- Checkout Button -->
+    <button class="checkout-btn" onclick="placeOrder()">Place Order</button>
+  </div>
+
+  <footer>
+    <a href="scan.html"><i class="fas fa-qrcode"></i><span>Scan</span></a>
+    <a href="chat.html"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
+    <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="alerts.html"><i class="fas fa-bell"></i><span>Alerts</span></a>
+    <a href="bag.html"><i class="fas fa-bag-shopping"></i><span>Bag</span></a>
+  </footer>
+
+  <script>
+    function renderCheckout() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let checkoutItemsContainer = document.getElementById("checkout-items");
+      let checkoutTotal = 0;
+
+      checkoutItemsContainer.innerHTML = "";
+
+      cart.forEach(item => {
+        let price = parseFloat(item.price.toString().replace(/[^0-9.-]+/g,"")) || 0;
+        checkoutTotal += price * item.qty;
+
+        let div = document.createElement("div");
+        div.classList.add("checkout-item");
+
+        div.innerHTML = `
+          <div class="item-details">
+            <img src="${item.img}" alt="${item.name}">
+            <div class="item-info">
+              <h4>${item.name}</h4>
+              <p>₱${price.toFixed(2)} x ${item.qty}</p>
+            </div>
+          </div>
+          <p><b>₱${(price * item.qty).toFixed(2)}</b></p>
+        `;
+
+        checkoutItemsContainer.appendChild(div);
+      });
+
+      document.getElementById("checkout-total").innerText = checkoutTotal.toFixed(2);
+    }
+
+    function editField(field) {
+      let span = document.getElementById(`display-${field}`);
+      let input = document.getElementById(`buyer-${field}`);
+
+      if (input.style.display === "none" || input.style.display === "") {
+        input.style.display = "inline-block";
+        span.style.display = "none";
+        input.focus();
+      } else {
+        span.innerText = input.value.trim() || span.innerText;
+        input.style.display = "none";
+        span.style.display = "inline-block";
+      }
+    }
+
+    function placeOrder() {
+      let name = document.getElementById("display-name").innerText.trim();
+      let campus = document.getElementById("display-campus").innerText.trim();
+      let payment = document.querySelector('input[name="payment"]:checked').value;
+
+      if (!name || !campus) {
+        alert("Please provide your name and campus.");
+        return;
+      }
+
+      alert(`Order placed!\nName: ${name}\nCampus: ${campus}\nPayment: ${payment}`);
+      localStorage.removeItem("cart"); // Clear cart after order
+     window.location.href = "thankyoupage.html";
+    }
+
+    renderCheckout();
+  </script>
+</body>
+</html>
