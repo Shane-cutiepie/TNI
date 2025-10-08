@@ -27,11 +27,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   // ✅ Auto-get from session
   $name = $_SESSION["name"] ?? $data["name"] ?? "Unknown";
   $campus = $_SESSION["campus"] ?? $data["campus"] ?? "Unknown";
-
   $orders = $conn->real_escape_string($data["orders"]);
   $quantity = intval($data["quantity"]);
   $amount = floatval($data["amount"]);
+  $payment = $conn->real_escape_string($data["payment"] ?? "Unspecified");
   $orderDate = date("Y-m-d H:i:s");
+
+  // ✅ Shipping fee logic
+  $shippingFees = [
+    'BU Polangui'   => 60,
+    'BU Guinobatan' => 30,
+    'BU Tabaco'     => 40,
+    'BU Gubat'      => 150,
+    'East Campus'   => 15,
+    'Main Campus'   => 15,
+    'Daraga Campus' => 15
+  ];
+
+  $shippingFee = $shippingFees[$campus] ?? 0;
+  $amountWithShipping = $amount;
 
   // ✅ Voucher system check
   $countQuery = "SELECT COUNT(*) AS total_orders FROM orders WHERE Name = ?";
@@ -43,24 +57,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $orderCount = $row["total_orders"] + 1;
 
   $voucherOrders = [1, 15, 30];
-  $discountRate = 0;
-  if (in_array($orderCount, $voucherOrders)) {
-    $discountRate = 0.15; // 15% discount
-  }
+  $discountRate = in_array($orderCount, $voucherOrders) ? 0.15 : 0;
 
-  $discountAmount = $amount * $discountRate;
-  $finalAmount = $amount - $discountAmount;
+  $discountAmount = $amountWithShipping * $discountRate;
+  $finalAmount = $amountWithShipping - $discountAmount;
 
-  // ✅ Save to DB (optional: you can add a Discount column if desired)
-  $sql = "INSERT INTO orders (Name, Campus, Orders, Quantity, Amount, OrderDate)
-          VALUES ('$name', '$campus', '$orders', '$quantity', '$finalAmount', '$orderDate')";
+  // ✅ Save order
+  $sql = "INSERT INTO orders (Name, Campus, Orders, Quantity, ShippingFee, Amount, Payment, OrderDate)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("sssddsss", $name, $campus, $orders, $quantity, $shippingFee, $finalAmount, $payment, $orderDate);
 
-  if ($conn->query($sql) === TRUE) {
+  if ($stmt->execute()) {
     echo json_encode([
       "success" => true,
       "discountApplied" => $discountRate > 0,
       "discountAmount" => $discountAmount,
       "finalAmount" => $finalAmount,
+      "shippingFee" => $shippingFee,
+      "payment" => $payment,
       "message" => $discountRate > 0
         ? "🎉 15% discount applied on your $orderCount" . "th purchase!"
         : "Order placed successfully!"
@@ -69,6 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     echo json_encode(["success" => false, "message" => $conn->error]);
   }
 
+  $stmt->close();
   $conn->close();
   exit;
 }
@@ -84,98 +100,152 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: #f8f8f8;
+      background: linear-gradient(180deg, #f2f5fc 0%, #e8effa 100%);
       margin: 0;
       padding: 0;
+      color: #333;
     }
+
     .checkout-container {
       width: 90%;
-      max-width: 700px;
-      margin: 40px auto;
+      max-width: 720px;
+      margin: 50px auto;
       background: #fff;
-      padding: 25px 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
     }
+
     h2 {
       text-align: center;
-      margin-bottom: 20px;
-      color: #ff6f00;
+      margin-bottom: 25px;
+      font-size: 26px;
+      color: #003366;
+      letter-spacing: 1px;
     }
+
+    .buyer-info {
+      background: #f9fbff;
+      border: 2px solid #c9daf5;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .buyer-info p {
+      margin: 6px 0;
+      color: #003366;
+      font-weight: 500;
+    }
+
     .checkout-items {
-      border-top: 1px solid #ddd;
+      border-top: 2px solid #d0d9ea;
       padding-top: 10px;
     }
+
     .checkout-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #eee;
-      padding: 10px 0;
+      border-bottom: 1px dashed #ddd;
+      padding: 12px 0;
     }
+
     .checkout-item img {
-      width: 60px;
-      height: 60px;
+      width: 65px;
+      height: 65px;
       object-fit: cover;
       border-radius: 10px;
       margin-right: 15px;
     }
+
     .item-details {
       display: flex;
       align-items: center;
     }
+
+    .item-info h4 {
+      margin: 0;
+      font-size: 16px;
+      color: #003366;
+    }
+
+    .item-info p {
+      font-size: 14px;
+      color: #666;
+    }
+
     .total {
       text-align: right;
-      font-size: 1.2em;
-      margin-top: 10px;
+      font-size: 1.3em;
+      margin-top: 15px;
       font-weight: 600;
-      color: #007bff;
+      color: #002244;
     }
-    .voucher {
-      background-color: #d9fdd3;
-      color: #146c2e;
+
+    #voucher-banner {
+      margin-top: 15px;
+      text-align: center;
+      background: #e7f8e9;
+      color: #1c7c3d;
       padding: 10px;
       border-radius: 8px;
-      margin-top: 10px;
-      text-align: center;
       font-weight: 500;
+      display: none;
     }
-    .buyer-info {
-      margin-top: 20px;
-    }
-    .buyer-info p {
-      margin: 8px 0;
-    }
-    .buyer-info span {
-      font-weight: 500;
-      color: #333;
-    }
+
     .payment-options {
-      margin-top: 20px;
+      margin-top: 30px;
+      background: #f9fbff;
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid #c9daf5;
     }
-    .payment-options label {
-      display: block;
+
+    .payment-options h3 {
+      color: #003366;
+      font-size: 18px;
       margin-bottom: 10px;
     }
+
+    .payment-options label {
+      display: block;
+      margin-bottom: 8px;
+      color: #444;
+    }
+
     #ewallet-suboptions {
       display: none;
-      margin-left: 20px;
+      margin-left: 25px;
     }
+
     .place-order-btn {
       width: 100%;
-      background-color: #ff6f00;
+      background: #003366;
       color: white;
-      padding: 12px;
+      padding: 14px;
       border: none;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 600;
-      border-radius: 8px;
+      border-radius: 10px;
       margin-top: 25px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
+
     .place-order-btn:hover {
-      background-color: #e65c00;
+      background: #002244;
+      transform: scale(1.03);
+    }
+
+    @media (max-width: 600px) {
+      .checkout-container {
+        padding: 25px;
+      }
+      h2 {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
@@ -211,6 +281,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     const userName = "<?php echo $_SESSION['name'] ?? ''; ?>";
     const userCampus = "<?php echo $_SESSION['campus'] ?? ''; ?>";
 
+    const shippingFees = {
+      "BU Polangui": 60,
+      "BU Guinobatan": 30,
+      "BU Tabaco": 40,
+      "BU Gubat": 150,
+      "East Campus": 15,
+      "Main Campus": 15,
+      "Daraga Campus": 15
+    };
+
     function loadBuyerInfo() {
       document.getElementById("display-name").innerText = userName || "Not logged in";
       document.getElementById("display-campus").innerText = userCampus || "Unknown Campus";
@@ -236,7 +316,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <p><b>₱${(price * item.qty).toFixed(2)}</b></p>
           </div>`;
       });
-      document.getElementById("checkout-total").innerText = total.toFixed(2);
+
+      const shippingFee = shippingFees[userCampus] || 0;
+      const totalWithShipping = total + shippingFee;
+      document.getElementById("checkout-total").innerText = totalWithShipping.toFixed(2);
+
+      if (shippingFee > 0) {
+        container.innerHTML += `<p style="text-align:right;font-weight:500;">Shipping Fee: ₱${shippingFee.toFixed(2)}</p>`;
+      }
     }
 
     async function placeOrder() {
@@ -247,9 +334,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       }
       if (cart.length === 0) return alert("Your cart is empty!");
 
-      const payment = document.querySelector('input[name="payment"]:checked');
-      if (!payment) return alert("Please select a payment method!");
-      const selectedPayment = payment.value;
+      const paymentRadio = document.querySelector('input[name="payment"]:checked');
+      if (!paymentRadio) return alert("Please select a payment method!");
+      let selectedPayment = paymentRadio.value;
+
+      if (selectedPayment === "E-Wallet") {
+        const ewallet = document.querySelector('input[name="ewallet"]:checked');
+        if (!ewallet) return alert("Please select an e-wallet option!");
+        selectedPayment = ewallet.value;
+      }
 
       const totalAmount = parseFloat(document.getElementById("checkout-total").innerText);
       const totalQuantity = cart.reduce((sum, i) => sum + i.qty, 0);
@@ -263,18 +356,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           campus: userCampus,
           orders: orderNames,
           quantity: totalQuantity,
-          amount: totalAmount
+          amount: totalAmount,
+          payment: selectedPayment
         })
       });
 
       const data = await res.json();
       if (data.success) {
+        let msg = `✅ Order placed successfully! Shipping Fee: ₱${data.shippingFee.toFixed(2)}\nPayment: ${data.payment}`;
         if (data.discountApplied) {
-          document.getElementById("voucher-banner").innerHTML =
-            `<div class='voucher'>${data.message}<br>Discount: ₱${data.discountAmount.toFixed(2)}<br>New Total: ₱${data.finalAmount.toFixed(2)}</div>`;
-        } else {
-          document.getElementById("voucher-banner").innerHTML = "";
+          msg += `\n🎉 ${data.message}\nDiscount: ₱${data.discountAmount.toFixed(2)}\nFinal Total: ₱${data.finalAmount.toFixed(2)}`;
         }
+        alert(msg);
+
         setTimeout(() => {
           localStorage.removeItem("cart");
           window.location.href = "thankyoupage.html";

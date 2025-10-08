@@ -126,20 +126,11 @@
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+    // ✅ Show only the current product in the modal
     function addToCart() {
-      const existingItem = cart.find(p => p.name === product.name);
-      if (existingItem) existingItem.qty++;
-      else cart.push({ ...product, qty: 1 });
-
-      let savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.forEach(item => {
-        const existing = savedCart.find(p => p.name === item.name);
-        if (existing) existing.qty += item.qty;
-        else savedCart.push(item);
-      });
-      localStorage.setItem("cart", JSON.stringify(savedCart));
-      updateBadge();
-      alert("✅ Product added to cart!");
+      cart = [{ ...product, qty: 1 }];
+      renderCart();
+      document.getElementById("cartModal").style.display = "block";
     }
 
     function buyNow() {
@@ -157,12 +148,12 @@
 
     updateBadge();
 
-    function openCart() { document.getElementById("cartModal").style.display = "block"; renderCart(); }
     function closeCart() { document.getElementById("cartModal").style.display = "none"; }
 
-    function increaseQty(name) { let item = cart.find(p => p.name === name); if (item) item.qty++; renderCart(); updateBadge(); }
-    function decreaseQty(name) { let item = cart.find(p => p.name === name); if (item && item.qty > 1) item.qty--; renderCart(); updateBadge(); }
+    function increaseQty(name) { let item = cart.find(p => p.name === name); if (item) item.qty++; renderCart(); }
+    function decreaseQty(name) { let item = cart.find(p => p.name === name); if (item && item.qty > 1) item.qty--; renderCart(); }
 
+    // ✅ Render only the currently selected item in modal
     function renderCart() {
       cartItems.innerHTML = cart.map(item => `
         <div class="cart-item">
@@ -180,13 +171,14 @@
       `).join("");
     }
 
+    // ✅ Add to cart storage
     function confirmAdd() {
       let savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.forEach(item => {
-        const existing = savedCart.find(p => p.name === item.name);
-        if (existing) existing.qty += item.qty;
-        else savedCart.push(item);
-      });
+      const item = cart[0]; // only one item in modal
+      const existing = savedCart.find(p => p.name === item.name);
+      if (existing) existing.qty += item.qty;
+      else savedCart.push(item);
+
       localStorage.setItem("cart", JSON.stringify(savedCart));
       updateBadge();
       closeCart();

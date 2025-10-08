@@ -1,17 +1,15 @@
 <?php
 session_start();
 if (!isset($_SESSION['email'])) {
-  // if not logged in, redirect to login page
   header("Location: login.php");
   exit();
 }
 
-// get session details
 $name = $_SESSION['name'] ?? 'Unknown User';
 $email = $_SESSION['email'] ?? 'No Email';
 $campus = $_SESSION['campus'] ?? 'Not specified';
 $member_since = $_SESSION['member_since'] ?? 'N/A';
-$avatar = $_SESSION['avatar'] ?? 'avatar.png'; // default avatar
+$avatar = $_SESSION['avatar'] ?? 'avatar.png';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,45 +24,70 @@ $avatar = $_SESSION['avatar'] ?? 'avatar.png'; // default avatar
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: #f9f9f9;
+  background: #f4f6fb;
   color: #333;
 }
+
+/* HEADER */
 header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 15px;
+  justify-content: flex-start;
   background: #001F3F;
   color: #fff;
+  padding: 12px 16px;
+  border-bottom: 4px solid transparent;
   position: sticky;
   top: 0;
 }
-header h2 {
-  flex: 1;
-  text-align: center;
-  margin: 0;
-  font-size: 18px;
+header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 4px;
+  background: linear-gradient(to bottom, white 2px, transparent 2px, transparent 4px, white 4px);
 }
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
-.header-left button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-  transition: .2s;
+.header-left a {
+  background: white;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
-.header-left button:hover {
-  color: #FF7F50;
-  transform: scale(1.2);
+.header-left i {
+  color: #F4A300;
+  font-size: 18px;
 }
 
+/* 🟦 Added “PROFILE” text beside back button */
+.header-left span {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-left: 5px;
+  letter-spacing: 0.5px;
+}
+
+/* PROFILE SECTION */
 section {
-  padding: 20px;
+  margin: 40px auto;
+  width: 90%;
+  max-width: 420px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: center;
 }
 .avatar {
@@ -72,12 +95,13 @@ section {
   height: 100px;
   border-radius: 50%;
   border: 3px solid #001F3F;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   object-fit: cover;
 }
 h2 {
   color: #001F3F;
   margin: 10px 0;
+  font-size: 20px;
 }
 p {
   margin: 5px 0;
@@ -89,53 +113,32 @@ p {
   color: #001F3F;
 }
 .btn {
-  display: inline-block;
-  padding: 8px 15px;
-  margin-top: 15px;
+  display: block;
+  width: 80%;
+  margin: 12px auto;
+  padding: 10px;
   background: #001F3F;
   color: #fff;
-  border-radius: 6px;
+  border-radius: 8px;
   text-decoration: none;
-  transition: .3s;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.btn i {
+  margin-right: 6px;
 }
 .btn:hover {
-  background: #FF7F50;
-}
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #001F3F;
-  display: flex;
-  justify-content: space-around;
-  padding: 8px 0;
-}
-footer a {
-  color: #fff;
-  font-size: 12px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-}
-footer i {
-  font-size: 22px;
-  transition: .2s;
-}
-footer a:hover i {
-  transform: scale(1.2);
-  color: #FF7F50;
+  background: #F4A300;
+  transform: scale(1.02);
 }
 </style>
 </head>
 <body>
   <header>
     <div class="header-left">
-      <img src="logo.png" alt="Logo" style="width:35px;height:35px;">
+      <a href="homepage.php"><i class="fas fa-chevron-left"></i></a>
+      <span>PROFILE</span>
     </div>
-    <h2>Profile</h2>
-    <div class="icons"><a href="homepage.html"><i class="fas fa-home"></i></a></div>
   </header>
 
   <section>
@@ -144,17 +147,10 @@ footer a:hover i {
     <p><span class="info-label">Email:</span> <?php echo htmlspecialchars($email); ?></p>
     <p><span class="info-label">Campus:</span> <?php echo htmlspecialchars($campus); ?></p>
     <p><span class="info-label">Member since:</span> <?php echo htmlspecialchars($member_since); ?></p>
-    <a href="edit_profile.php" class="btn"><i class="fas fa-user-edit"></i> Edit Profile</a>
-    <a href="orderhistory.php" class="btn"><i class="fas fa-chevron-right"></i> Order History</a>
-    <a href="login.php" class="btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-  </section>
 
-  <footer>
-    <a href="scan.html"><i class="fas fa-qrcode"></i><span>Scan</span></a>
-    <a href="chat.html"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
-    <a href="homepage.html"><i class="fas fa-home"></i><span>Home</span></a>
-    <a href="alerts.html"><i class="fas fa-bell"></i><span>Alerts</span></a>
-    <a href="bag.html"><i class="fas fa-bag-shopping"></i><span>Bag</span></a>
-  </footer>
+    <a href="edit_profile.php" class="btn"><i class="fas fa-user-edit"></i>Edit Profile</a>
+    <a href="orderhistory.php" class="btn"><i class="fas fa-history"></i>Order History</a>
+    <a href="login.php" class="btn"><i class="fas fa-sign-out-alt"></i>Logout</a>
+  </section>
 </body>
 </html>

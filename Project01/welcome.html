@@ -1,55 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome</title>
-<style>
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #f1f1f1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  .welcome-box {
-    background: #fff;
-    padding: 40px 60px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    text-align: center;
-  }
-  h1 {
-    color: #001F3F;
-    margin-bottom: 10px;
-  }
-  p {
-    color: #FF7F50;
-    font-weight: 500;
-    margin-bottom: 20px;
-  }
-  button {
-    padding: 12px 24px;
-    background: #001F3F;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  button:hover {
-    background: #FF7F50;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome | Tindahan ni Isko</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(to bottom, #ffdfb4 0%, #001f3f 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      color: #fff;
+      overflow-x: hidden;
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    /* Logo */
+    .logo {
+      width: 300px;
+      margin-bottom: 40px;
+      animation: fadeInDown 1.2s ease forwards;
+    }
+
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Welcome Box */
+    .welcome-box {
+      background-color: rgba(27, 31, 59, 0.95);
+      border-radius: 20px;
+      padding: 30px 60px;
+      display: inline-block;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      margin-bottom: 60px;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .welcome-box h1 { color: #f9973e; font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .welcome-box h2 { color: #ffae5f; font-size: 1.4rem; font-weight: 600; margin-bottom: 5px; }
+    .welcome-box p { color: #ffc77f; font-size: 1rem; font-weight: 500; }
+
+    /* Continue button wrapper */
+    .continue-wrapper {
+      position: relative; /* for absolute mascot */
+      display: inline-block;
+      margin-bottom: 60px;
+    }
+
+    .continue-btn {
+      padding: 16px 50px;
+      border-radius: 40px;
+      background-color: #1b1f3b;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      animation: fadeInUp 1.5s ease forwards;
+    }
+
+    .continue-btn:hover {
+      background-color: #fcb045;
+      color: #1b1f3b;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mascot positioning and animation */
+    .mascot {
+      position: absolute;
+      left: 100%;       /* right next to button */
+      bottom: 0;        /* align bottom with button */
+      margin-left: 10px;/* gap from button */
+      width: 150px;
+      transform-origin: center bottom;
+      animation: slideBounceWave 3s ease-in-out infinite;
+    }
+
+    @keyframes slideBounceWave {
+      0%   { opacity: 0; transform: translateX(50px) translateY(0) rotate(0deg); }
+      10%  { opacity: 1; transform: translateX(0) translateY(0) rotate(0deg); }
+      25%  { transform: translateX(0) translateY(-5px) rotate(2deg); }
+      50%  { transform: translateX(0) translateY(-10px) rotate(0deg); }
+      75%  { transform: translateX(0) translateY(-5px) rotate(-2deg); }
+      100% { transform: translateX(0) translateY(0) rotate(0deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .logo { width: 220px; }
+      .welcome-box { width: 85%; padding: 20px; }
+      .mascot { width: 120px; left: auto; top: 100%; margin-left: 0; margin-top: 15px; animation: none; position: static; display: block; }
+      .continue-wrapper { display: flex; flex-direction: column; align-items: center; }
+    }
+
+  </style>
 </head>
 <body>
+
+  <!-- Logo -->
+  <img src="./logo.png" alt="Tindahan ni Isko Logo" class="logo">
+
+  <!-- Welcome Text -->
   <div class="welcome-box">
-    <h1>Welcome to Tindahan ni Isko</h1>
+    <h1>Marhay na Aldaw, BUEÑOs!</h1>
+    <h2>Welcome to Tindahan ni Isko</h2>
     <p>Your one-stop campus shop!</p>
-    <button onclick="location.href='homepage.html'">Continue</button>
   </div>
+
+  <!-- Continue Button + Mascot -->
+  <div class="continue-wrapper">
+    <a href="homepage.php" class="continue-btn">Continue →</a>
+    <img src="./bear-mascot.png" alt="Mascot" class="mascot">
+  </div>
+
 </body>
 </html>

@@ -28,10 +28,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $campus = $_SESSION["campus"] ?? $data["campus"] ?? "Unknown";
 
     $orders = $data["orders"];
-    $quantity = intval($data["quantity"]);
+    $quantity = max(1, intval($data["quantity"])); // ✅ ensure at least 1 quantity
     $amount = floatval($data["amount"]);
     $payment = $data["payment"] ?? "";
     $orderDate = date("Y-m-d H:i:s");
+
+    // 🔹 Shipping fees per campus
+    $shippingFees = [
+        'BU Polangui'   => 60,
+        'BU Guinobatan' => 30,
+        'BU Tabaco'     => 40,
+        'BU Gubat'      => 150,
+        'East Campus'   => 15,
+        'Main Campus'   => 15,
+        'Daraga Campus' => 15
+    ];
+    $shippingFee = $shippingFees[$campus] ?? 0;
 
     // 🔹 STEP 1: Count user's existing orders
     $countQuery = $conn->prepare("SELECT COUNT(*) as total FROM orders WHERE Name = ?");
@@ -43,21 +55,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // 🔹 STEP 2: Check if voucher applies
     $discountApplied = false;
+    $discountRate = 0;
     if (in_array($orderCount, [1, 15, 30])) {
-        $amount = $amount * 0.85; // 15% off
+        $discountRate = 0.15;
         $discountApplied = true;
     }
 
-    // 🔹 STEP 3: Insert order (fix: use prepared statement to ensure payment saves)
-    $insert = $conn->prepare("INSERT INTO orders (Name, Campus, Orders, Quantity, Amount, Payment, OrderDate)
-                              VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $insert->bind_param("sssisss", $name, $campus, $orders, $quantity, $amount, $payment, $orderDate);
+    // 🔹 STEP 3: Compute total with shipping and discount
+    $amountWithShipping = $amount + $shippingFee;
+    $finalAmount = $amountWithShipping - ($amountWithShipping * $discountRate);
+
+    // 🔹 STEP 4: Insert order (fix: ensure payment & shipping save properly)
+    $insert = $conn->prepare("INSERT INTO orders (Name, Campus, Orders, Quantity, ShippingFee, Amount, Payment, OrderDate)
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $insert->bind_param("sssddsss", $name, $campus, $orders, $quantity, $shippingFee, $finalAmount, $payment, $orderDate);
 
     if ($insert->execute()) {
         echo json_encode([
             "success" => true,
             "discountApplied" => $discountApplied,
-            "finalAmount" => number_format($amount, 2),
+            "discountRate" => $discountRate,
+            "finalAmount" => number_format($finalAmount, 2),
+            "shippingFee" => number_format($shippingFee, 2),
             "orderCount" => $orderCount
         ]);
     } else {
@@ -111,6 +130,7 @@ h2 { text-align: center; margin-bottom: 20px; color: #ff6f00; }
 
   <div class="checkout-items" id="checkout-items"></div>
   <p class="total">Total: ₱<span id="checkout-total">0.00</span></p>
+  <p class="total" id="shipping-fee" style="font-size: 0.95em; color:#555;"></p>
 
   <div class="payment-options">
     <h3>Payment Method</h3>
@@ -130,8 +150,17 @@ h2 { text-align: center; margin-bottom: 20px; color: #ff6f00; }
 <script>
 const userName = "<?php echo $_SESSION['name'] ?? ''; ?>";
 const userCampus = "<?php echo $_SESSION['campus'] ?? ''; ?>";
-
 let buyNowItem = JSON.parse(localStorage.getItem("buyNowItem"));
+
+const shippingFees = {
+  "BU Polangui": 60,
+  "BU Guinobatan": 30,
+  "BU Tabaco": 40,
+  "BU Gubat": 150,
+  "East Campus": 15,
+  "Main Campus": 15,
+  "Daraga Campus": 15
+};
 
 function loadBuyerInfo() {
   document.getElementById("display-name").innerText = userName || "Not logged in";
@@ -141,15 +170,20 @@ function loadBuyerInfo() {
 function renderCheckout() {
   const container = document.getElementById("checkout-items");
   container.innerHTML = "";
+
   if(!buyNowItem) {
     container.innerHTML = "<p style='text-align:center;'>No item selected for Buy Now.</p>";
     document.getElementById("checkout-total").innerText = "0.00";
     return;
   }
 
+  buyNowItem.qty = buyNowItem.qty && buyNowItem.qty > 0 ? buyNowItem.qty : 1;
   const price = parseFloat(buyNowItem.price) || 0;
-  const qty = buyNowItem.qty || 1;
-  const total = price * qty;
+  const total = price * buyNowItem.qty;
+  const shippingFee = shippingFees[userCampus] || 0;
+
+  document.getElementById("shipping-fee").innerText = `Shipping Fee: ₱${shippingFee.toFixed(2)}`;
+  document.getElementById("checkout-total").innerText = (total + shippingFee).toFixed(2);
 
   container.innerHTML = `
     <div class="checkout-item">
@@ -159,7 +193,7 @@ function renderCheckout() {
           <h4>${buyNowItem.name}</h4>
           <div class="qty-controls">
             <button onclick="changeQty(-1)">-</button>
-            <span id="qty-display">${qty}</span>
+            <span id="qty-display">${buyNowItem.qty}</span>
             <button onclick="changeQty(1)">+</button>
           </div>
           <p>₱${price.toFixed(2)} each</p>
@@ -168,23 +202,22 @@ function renderCheckout() {
       <p><b>₱<span id="total-display">${total.toFixed(2)}</span></b></p>
     </div>
   `;
-  document.getElementById("checkout-total").innerText = total.toFixed(2);
 }
 
 function changeQty(delta) {
   buyNowItem.qty = Math.max(1, (buyNowItem.qty || 1) + delta);
-  const total = parseFloat(buyNowItem.price) * buyNowItem.qty;
+  const price = parseFloat(buyNowItem.price);
+  const total = price * buyNowItem.qty;
+  const shippingFee = shippingFees[userCampus] || 0;
   document.getElementById("qty-display").innerText = buyNowItem.qty;
   document.getElementById("total-display").innerText = total.toFixed(2);
-  document.getElementById("checkout-total").innerText = total.toFixed(2);
+  document.getElementById("checkout-total").innerText = (total + shippingFee).toFixed(2);
 }
 
 async function placeOrder() {
-  if (!userName || !userCampus) {
-    alert("User info missing. Please log in first.");
-    return;
-  }
+  if (!userName || !userCampus) return alert("User info missing. Please log in first.");
   if (!buyNowItem) return alert("No item selected for Buy Now!");
+  if (buyNowItem.qty <= 0) return alert("Quantity must be at least 1.");
 
   let payment = document.querySelector('input[name="payment"]:checked');
   if (!payment) return alert("Please select a payment method!");
@@ -196,11 +229,12 @@ async function placeOrder() {
     selectedPayment = ewallet.value;
   }
 
+  const shippingFee = shippingFees[userCampus] || 0;
   const totalAmount = parseFloat(document.getElementById("checkout-total").innerText);
-  const orderNames = buyNowItem.name + " (x" + buyNowItem.qty + ")";
+  const orderNames = `${buyNowItem.name} (x${buyNowItem.qty})`;
 
   try {
-    const res = await fetch("checkout.php", {
+    const res = await fetch("order-info.php", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
@@ -208,16 +242,16 @@ async function placeOrder() {
         campus: userCampus,
         orders: orderNames,
         quantity: buyNowItem.qty,
-        amount: totalAmount,
+        amount: totalAmount - shippingFee,
         payment: selectedPayment
       })
     });
 
     const data = await res.json();
     if (data.success) {
-      if (data.discountApplied) {
-        alert(`🎉 Congrats! You received a 15% discount on your ${data.orderCount}th order!\nFinal Total: ₱${data.finalAmount}`);
-      }
+      let msg = `✅ Order placed successfully!\nShipping Fee: ₱${data.shippingFee}\nFinal Total: ₱${data.finalAmount}`;
+      if (data.discountApplied) msg += `\n🎉 15% discount applied!`;
+      alert(msg);
       localStorage.removeItem("buyNowItem");
       window.location.href = "thankyoupage.html";
     } else {

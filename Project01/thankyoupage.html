@@ -9,66 +9,103 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #f5f5f5;
+      background: linear-gradient(180deg, #fafafa 0%, #f3f6fc 100%);
       margin: 0;
       padding: 0;
       color: #333;
     }
+
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 15px;
-      background: #001F3F;
+      padding: 15px 20px;
+      background: #001F3F; /* navy blue */
       color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    header img { width: 40px; height: 40px; }
-    header h2 { font-size: 20px; margin: 0; }
-    .icons a { color: white; font-size: 22px; }
+
+    header img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
+
+    header h2 {
+      font-size: 22px;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    .icons a {
+      color: white;
+      font-size: 24px;
+      transition: 0.3s;
+      text-decoration: none;
+    }
+
+    .icons a:hover {
+      color: #FFCC66;
+    }
 
     .thankyou-container {
       max-width: 700px;
-      margin: 50px auto 100px;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
+      margin: 60px auto 120px;
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 16px;
       text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      position: relative;
+      border: 3px solid #001F3F; /* navy blue border */
     }
+
+    .thankyou-container img {
+      width: 160px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
     .thankyou-container h1 {
-      font-size: 26px;
+      font-size: 28px;
       color: #28a745;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
+
     .thankyou-container p {
-      font-size: 16px;
+      font-size: 17px;
       color: #555;
+      margin-bottom: 25px;
     }
+
     .thankyou-container .btn-home {
-      margin-top: 25px;
       display: inline-block;
       background: #FF851B;
       color: #fff;
-      padding: 12px 20px;
+      padding: 12px 24px;
       font-size: 16px;
-      font-weight: bold;
-      border-radius: 8px;
+      font-weight: 600;
+      border-radius: 10px;
       text-decoration: none;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
+
     .thankyou-container .btn-home:hover {
       background: #FF6300;
+      transform: scale(1.05);
     }
 
     footer {
       position: fixed;
       bottom: 0;
       width: 100%;
-      background: #001F3F;
+      background: #001F3F; /* navy blue footer */
       display: flex;
       justify-content: space-around;
-      padding: 8px 0;
+      padding: 10px 0;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
     }
+
     footer a {
       color: #fff;
       font-size: 12px;
@@ -77,11 +114,15 @@
       flex-direction: column;
       align-items: center;
       gap: 3px;
+      transition: 0.3s;
+      text-decoration: none; /* removes underline */
     }
+
     footer i {
       font-size: 22px;
       transition: .2s;
     }
+
     footer a:hover i {
       transform: scale(1.2);
       color: #FF7F50;
@@ -92,19 +133,20 @@
   <header>
     <img src="logo.png" alt="Logo">
     <h2>Order Complete</h2>
-    <div class="icons"><a href="homepage.html"><i class="fas fa-home"></i></a></div>
+    <div class="icons"><a href="homepage.php"><i class="fas fa-home"></i></a></div>
   </header>
 
   <div class="thankyou-container">
+    <img src="bear-mascot.png" alt="Mascot">
     <h1>✅ Thank You for Your Order!</h1>
     <p>Your order has been placed successfully. We’ll notify you once it’s ready for pickup or delivery.</p>
-    <a href="homepage.html" class="btn-home">Go Back to Home</a>
+    <a href="homepage.php" class="btn-home">Go Back to Home</a>
   </div>
 
   <footer>
     <a href="scan.html"><i class="fas fa-qrcode"></i><span>Scan</span></a>
     <a href="chat.html"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
-    <a href="homepage.html"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="homepage.php"><i class="fas fa-home"></i><span>Home</span></a>
     <a href="alerts.html"><i class="fas fa-bell"></i><span>Alerts</span></a>
     <a href="bag.html"><i class="fas fa-bag-shopping"></i><span>Bag</span></a>
   </footer>

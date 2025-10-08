@@ -135,22 +135,12 @@
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    function addToCart() {
-      const existingItem = cart.find(p => p.name === product.name);
-      if (existingItem) existingItem.qty++;
-      else cart.push({ ...product });
-
-      let savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.forEach(item => {
-        const existing = savedCart.find(p => p.name === item.name);
-        if (existing) existing.qty += item.qty;
-        else savedCart.push(item);
-      });
-      localStorage.setItem("cart", JSON.stringify(savedCart));
-      updateBadge();
-      alert("✅ Product added to cart!");
-    }
-
+  function addToCart() {
+  // Show only the current product in the modal
+  cart = [{ ...product, qty: 1 }];
+  renderCart();
+  document.getElementById("cartModal").style.display = "block";
+}
     function buyNow() {
       localStorage.setItem("buyNowItem", JSON.stringify(product));
       window.location.href = "order-info.php";
@@ -172,22 +162,24 @@
     function increaseQty(name) { let item = cart.find(p => p.name === name); if (item) item.qty++; renderCart(); updateBadge(); }
     function decreaseQty(name) { let item = cart.find(p => p.name === name); if (item && item.qty > 1) item.qty--; renderCart(); updateBadge(); }
 
-    function renderCart() {
-      cartItems.innerHTML = cart.map(item => `
-        <div class="cart-item">
-          <img src="${item.img}" alt="${item.name}">
-          <div class="cart-item-details">
-            <h4>${item.name}</h4>
-            <p>${item.priceText}</p>
-            <div class="qty-controls">
-              <button onclick="decreaseQty('${item.name}')">-</button>
-              <span>${item.qty}</span>
-              <button onclick="increaseQty('${item.name}')">+</button>
-            </div>
-          </div>
+
+function renderCart() {
+  // Show only the single current product being added
+  cartItems.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.img}" alt="${item.name}">
+      <div class="cart-item-details">
+        <h4>${item.name}</h4>
+        <p>${item.priceText}</p>
+        <div class="qty-controls">
+          <button onclick="decreaseQty('${item.name}')">-</button>
+          <span>${item.qty}</span>
+          <button onclick="increaseQty('${item.name}')">+</button>
         </div>
-      `).join("");
-    }
+      </div>
+    </div>
+  `).join("");
+}
 
     function confirmAdd() {
       let savedCart = JSON.parse(localStorage.getItem("cart")) || [];

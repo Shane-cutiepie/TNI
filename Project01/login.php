@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_SESSION['avatar'] = $user['avatar'] ?? 'avatar.png'; // optional default
 
                 // ✅ Redirect to homepage
-                header("Location: homepage.html");
+                header("Location: homepage.php");
                 exit;
             } else {
                 $error = "Invalid password.";

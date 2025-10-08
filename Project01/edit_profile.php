@@ -8,12 +8,12 @@ if (!isset($_SESSION['email'])) {
   exit();
 }
 
-$email = $_SESSION['email'];
+$current_email = $_SESSION['email'];
 
 // Fetch current user data
 $query = "SELECT * FROM signed_users WHERE school_email = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("s", $email);
+$stmt->bind_param("s", $current_email);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
@@ -29,11 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $update = "UPDATE signed_users SET fullname=?, school_email=?, campuses=?, password=?, avatar=? WHERE school_email=?";
     $stmt = $conn->prepare($update);
-    $stmt->bind_param("ssssss", $fullname, $school_email, $campuses, $hashed_password, $avatar, $email);
+    $stmt->bind_param("ssssss", $fullname, $school_email, $campuses, $hashed_password, $avatar, $current_email);
   } else {
     $update = "UPDATE signed_users SET fullname=?, school_email=?, campuses=?, avatar=? WHERE school_email=?";
     $stmt = $conn->prepare($update);
-    $stmt->bind_param("sssss", $fullname, $school_email, $campuses, $avatar, $email);
+    $stmt->bind_param("sssss", $fullname, $school_email, $campuses, $avatar, $current_email);
   }
 
   if ($stmt->execute()) {
@@ -42,70 +42,93 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['campus'] = $campuses;
     $_SESSION['avatar'] = $avatar;
 
-    echo "<script>alert('Profile updated successfully!'); window.location='edit_profile.php';</script>";
+    echo "<script>
+      alert('Profile updated successfully!');
+      window.location='profile.php';
+    </script>";
+    exit();
   } else {
     echo "<script>alert('Error updating profile. Please try again.');</script>";
   }
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset='UTF-8' />
+<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
 <title>Edit Profile</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' rel='stylesheet'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
 
 <style>
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: #f9f9f9;
+  background: #f4f6fa;
   color: #333;
 }
+
+/* HEADER */
 header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 15px;
+  justify-content: flex-start;
   background: #001F3F;
   color: #fff;
+  padding: 12px 16px;
   position: sticky;
   top: 0;
+  z-index: 10;
+  border-bottom: 4px solid transparent;
 }
-header h2 {
-  flex: 1;
-  text-align: center;
-  margin: 0;
-  font-size: 18px;
+header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 4px;
+  background: linear-gradient(to bottom, white 2px, transparent 2px, transparent 4px, white 4px);
 }
+
+/* Back button + Title */
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
-.header-left button {
-  background: none;
-  border: none;
+.header-left a {
+  background: white;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+.header-left i {
+  color: #F4A300;
+  font-size: 18px;
+}
+.header-left span {
+  font-size: 18px;
+  font-weight: 600;
   color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-  transition: .2s;
-}
-.header-left button:hover {
-  color: #FF7F50;
-  transform: scale(1.2);
+  margin-left: 5px;
+  letter-spacing: 0.5px;
 }
 
-/* Form container */
+/* FORM CONTAINER */
 form {
   max-width: 400px;
-  margin: 30px auto;
+  margin: 35px auto;
   background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 label {
   display: block;
@@ -121,9 +144,10 @@ input, select {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-family: 'Poppins', sans-serif;
+  font-size: 14px;
 }
 
-/* Avatar gallery */
+/* Avatar Gallery */
 .avatar-selection {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -141,13 +165,13 @@ input, select {
 }
 .avatar-selection img:hover {
   transform: scale(1.1);
-  border-color: #FF7F50;
+  border-color: #F4A300;
 }
 .avatar-selection img.selected {
   border: 2px solid #001F3F;
 }
 
-/* Current avatar preview */
+/* Avatar preview */
 #currentAvatarPreview {
   width: 80px;
   height: 80px;
@@ -166,36 +190,35 @@ button {
   background: #001F3F;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   transition: .3s;
 }
 button:hover {
-  background: #FF7F50;
+  background: #F4A300;
 }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-left">
-    <button onclick="history.back();"><i class="fas fa-arrow-left"></i></button>
+  <div class='header-left'>
+    <a href='profile.php'><i class='fas fa-chevron-left'></i></a>
+    <span>EDIT PROFILE</span>
   </div>
-  <h2>Edit Profile</h2>
-  <div style="width:35px;"></div>
 </header>
 
-<form method="POST" action="">
-  <label for="fullname">Full Name</label>
-  <input type="text" id="fullname" name="fullname" value="<?php echo htmlspecialchars($user['fullname']); ?>" required>
+<form method='POST' action=''>
+  <label for='fullname'>Full Name</label>
+  <input type='text' id='fullname' name='fullname' value='<?php echo htmlspecialchars($user['fullname']); ?>' required>
 
-  <label for="school_email">School Email</label>
-  <input type="email" id="school_email" name="school_email" value="<?php echo htmlspecialchars($user['school_email']); ?>" required>
+  <label for='school_email'>School Email</label>
+  <input type='email' id='school_email' name='school_email' value='<?php echo htmlspecialchars($user['school_email']); ?>' required>
 
-  <label for="campuses">Campus</label>
-  <select id="campuses" name="campuses" required>
-    <option value="">Select your campus</option>
+  <label for='campuses'>Campus</label>
+  <select id='campuses' name='campuses' required>
+    <option value=''>Select your campus</option>
     <?php
     $campusOptions = ['BU Polangui', 'BU Guinobatan', 'BU Tabaco', 'BU Gubat', 'East Campus', 'Main Campus', 'Daraga Campus'];
     foreach ($campusOptions as $option) {
@@ -205,15 +228,13 @@ button:hover {
     ?>
   </select>
 
-  <label for="password">New Password (leave blank to keep current)</label>
-  <input type="password" id="password" name="password" placeholder="Enter new password">
+  <label for='password'>New Password (leave blank to keep current)</label>
+  <input type='password' id='password' name='password' placeholder='Enter new password'>
 
   <label>Choose Avatar</label>
-  <!-- Current Avatar Preview -->
-  <img id="currentAvatarPreview" src="<?php echo htmlspecialchars($user['avatar']); ?>">
+  <img id='currentAvatarPreview' src='<?php echo htmlspecialchars($user['avatar']); ?>'>
 
-  <!-- Avatar Gallery -->
-  <div class="avatar-selection">
+  <div class='avatar-selection'>
     <?php
     for ($i = 1; $i <= 8; $i++) {
       $src = "assets/avatar$i.jpg";
@@ -223,9 +244,8 @@ button:hover {
     ?>
   </div>
 
-  <input type="hidden" id="avatarInput" name="avatarInput" value="<?php echo htmlspecialchars($user['avatar']); ?>">
-
-  <button type="submit">Save Changes</button>
+  <input type='hidden' id='avatarInput' name='avatarInput' value='<?php echo htmlspecialchars($user['avatar']); ?>'>
+  <button type='submit'>Save Changes</button>
 </form>
 
 <script>
@@ -235,16 +255,6 @@ function selectAvatar(path, element) {
   element.classList.add('selected');
   document.getElementById('currentAvatarPreview').src = path;
 }
-
-// Highlight the saved avatar on page load
-window.addEventListener('DOMContentLoaded', () => {
-  const currentAvatar = document.getElementById('avatarInput').value;
-  document.querySelectorAll('.avatar-selection img').forEach(img => {
-    if (img.src.includes(currentAvatar)) {
-      img.classList.add('selected');
-    }
-  });
-});
 </script>
 
 </body>

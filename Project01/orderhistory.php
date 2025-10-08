@@ -10,7 +10,16 @@ if (!isset($_SESSION['email'])) {
 
 $name = $_SESSION['name']; // from login.php session
 
-$stmt = $conn->prepare("SELECT Orders, Quantity, Amount, OrderDate FROM orders WHERE Name = ? ORDER BY OrderDate DESC");
+// ✅ Fetch only valid orders (exclude null, empty, or undefined entries)
+$stmt = $conn->prepare("
+  SELECT Orders, Quantity, Amount, Payment, OrderDate, Campus
+  FROM orders
+  WHERE Name = ?
+    AND Orders IS NOT NULL
+    AND Orders <> ''
+    AND Orders <> 'undefined'
+  ORDER BY OrderDate DESC
+");
 $stmt->bind_param("s", $name);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -115,6 +124,8 @@ $result = $stmt->get_result();
             <th>Product Ordered</th>
             <th>Quantity</th>
             <th>Amount (₱)</th>
+            <th>Payment</th>
+            <th>Campus</th>
             <th>Date</th>
           </tr>
         </thead>
@@ -123,17 +134,19 @@ $result = $stmt->get_result();
             <tr>
               <td><?php echo htmlspecialchars($row['Orders']); ?></td>
               <td><?php echo htmlspecialchars($row['Quantity']); ?></td>
-              <td><?php echo htmlspecialchars($row['Amount']); ?></td>
+              <td><?php echo number_format($row['Amount'], 2); ?></td>
+              <td><?php echo htmlspecialchars($row['Payment']); ?></td>
+              <td><?php echo htmlspecialchars($row['Campus']); ?></td>
               <td><?php echo date("M d, Y", strtotime($row['OrderDate'])); ?></td>
             </tr>
           <?php endwhile; ?>
         </tbody>
       </table>
     <?php else: ?>
-      <p class="no-orders">You have no orders yet.</p>
+      <p class="no-orders">You have no valid orders yet.</p>
     <?php endif; ?>
 
-    <a href="homepage.html" class="back-btn"><i class="fas fa-home"></i> Back to Home</a>
+    <a href="homepage.php" class="back-btn"><i class="fas fa-home"></i> Back to Home</a>
   </div>
 </body>
 </html>

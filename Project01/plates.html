@@ -55,26 +55,12 @@
     .header-icons {
       display: flex;
       gap: 15px;
-      position: relative;
     }
 
     .header-icons a {
       color: white;
       font-size: 20px;
       text-decoration: none;
-      position: relative;
-    }
-
-    .cart-badge {
-      position: absolute;
-      top: -6px;
-      right: -10px;
-      background: red;
-      color: white;
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 50%;
-      display: none;
     }
 
     /* Product Grid */
@@ -89,7 +75,7 @@
       text-align: center;
       border: 1px solid #ddd;
       border-radius: 10px;
-      padding: 10px;
+      padding: 12px;
       background: #fafafa;
       transition: 0.2s ease;
     }
@@ -104,12 +90,13 @@
       display: block;
     }
 
+    /* Bigger image box like lanyard.html */
     .image-box {
       width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 8px;
+      height: 200px; /* increased height */
+      border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .image-box img {
@@ -120,14 +107,14 @@
 
     .product-name {
       font-weight: bold;
-      font-size: 14px;
-      margin: 4px 0;
+      font-size: 15px;
+      margin: 5px 0;
     }
 
     .price {
       color: #000;
       font-size: 14px;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       display: block;
     }
 
@@ -145,87 +132,27 @@
   <!-- Header -->
   <header class="header">
     <div class="header-left">
-      <a href="homepage.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+      <a href="homepage.php" class="back-btn"><i class="fas fa-chevron-left"></i></a>
       <span class="header-title">PLATES AND SEALS</span>
     </div>
     <div class="header-icons">
       <a href="#"><i class="fas fa-search"></i></a>
-      <a href="cart.html">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cartBadge" class="cart-badge">0</span>
-      </a>
+      <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
     </div>
   </header>
 
   <!-- Product Grid -->
-  <section class="product-grid" id="productGrid"></section>
-
-  <script>
-    // Product database
-    const products = [
-      { id: "plate1", name: "Seal & Plate", price: 100, img: "seals1.jpg", rating: 0, sold: 0 },
-      { id: "plate2", name: "Seal Only", price: 60, img: "seals2.jpg", rating: 0, sold: 0 },
-      { id: "plate3", name: "BU Polangui", price: 40, img: "plate1.jpg", rating: 0, sold: 0 },
-      { id: "plate4", name: "BU Guinobatan", price: 40, img: "plate2.jpg", rating: 0, sold: 0 },
-      { id: "plate5", name: "BU Gubat", price: 40, img: "plate3.jpg", rating: 0, sold: 0 },
-      { id: "plate6", name: "BU Tabaco", price: 40, img: "plate4.jpg", rating: 0, sold: 0 },
-      { id: "plate7", name: "BUCE", price: 40, img: "plate5.jpg", rating: 0, sold: 0 },
-      { id: "plate8", name: "BUCS", price: 40, img: "plate6.jpg", rating: 0, sold: 0 },
-      { id: "plate9", name: "BUCSSP", price: 40, img: "plate7.jpg", rating: 0, sold: 0 },
-      { id: "plate10", name: "BUCBEM", price: 40, img: "plate8.jpg", rating: 0, sold: 0 },
-      { id: "plate11", name: "BUCM", price: 40, img: "plate9.jpg", rating: 0, sold: 0 },
-      { id: "plate12", name: "BUCIT", price: 40, img: "plate10.jpg", rating: 0, sold: 0 },
-      { id: "plate13", name: "BUCENG", price: 40, img: "plate11.jpg", rating: 0, sold: 0 },
-      { id: "plate14", name: "Plate 14", price: 240, img: "plate14.jpg", rating: 0, sold: 0 },
-      { id: "plate15", name: "Plate 15", price: 250, img: "plate15.jpg", rating: 0, sold: 0 }
-    ];
-
-    const productGrid = document.getElementById("productGrid");
-    const cartBadge = document.getElementById("cartBadge");
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    // Render products
-    function renderProducts() {
-      productGrid.innerHTML = products.map(p => `
-        <div class="product-card">
-          <a href="product-details-plates.html?id=${p.id}">
-            <div class="image-box">
-              <img src="${p.img}" alt="${p.name}">
-            </div>
-            <p class="product-name">${p.name}</p>
-            <span class="price">₱${p.price.toFixed(2)}</span>
-            <p class="rating"><i class="fas fa-star"></i> ${p.rating.toFixed(1)} | ${p.sold} sold</p>
-          </a>
+  <section class="product-grid">
+    <div class="product-card">
+      <a href="product-details-plates.html">
+        <div class="image-box">
+          <img src="seals1.jpg" alt="Seal & Plate">
         </div>
-      `).join("");
-    }
-
-    // Update cart badge
-    function updateCartBadge() {
-      if (cart.length > 0) {
-        cartBadge.style.display = "inline-block";
-        cartBadge.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-      } else {
-        cartBadge.style.display = "none";
-      }
-    }
-
-    renderProducts();
-    updateCartBadge();
-
-    // Redirect to order-info.php with selected product info
-const buyNowBtn = document.getElementById("buyNowBtn");
-buyNowBtn.addEventListener("click", () => {
-  const product = products[currentIndex];
-  // Encode product info in URL
-  const params = new URLSearchParams({
-    name: product.name,
-    price: product.price,
-    img: product.img
-  });
-  window.location.href = `order-info.php?${params.toString()}`;
-});
-
-  </script>
+        <p class="product-name">Seal & Plate</p>
+        <span class="price">₱100.00</span>
+        <p class="rating"><i class="fas fa-star"></i> 0.0 | 0 sold</p>
+      </a>
+    </div>
+  </section>
 </body>
 </html>
