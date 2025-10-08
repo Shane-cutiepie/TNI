@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 15px;
+      background: #001F3F;
+      color: white;
+    }
+    header img { width: 40px; height: 40px; }
+    header h2 { font-size: 20px; margin: 0; }
+    .icons a { color: white; font-size: 22px; }
+
+    .checkout-container {
+      max-width: 900px;
+      margin: 20px auto 80px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #001F3F;
+      text-align: center;
+    }
+
+    .buyer-info { margin-bottom: 20px; }
+    .buyer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 8px 0;
+    }
+    .buyer-row span {
+      font-size: 16px;
+      font-weight: 500;
+      color: #001F3F;
+    }
+    .buyer-row button {
+      background: none;
+      border: none;
+      color: #0074D9;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .buyer-row input {
+      display: none;
+      width: 100%;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .checkout-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .checkout-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 12px;
+    }
+    .item-details {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    .item-info h4 { margin: 0 0 3px; font-size: 15px; color: #001F3F; }
+    .item-info p { margin: 0; font-size: 14px; color: #555; }
+
+    .payment-options {
+      margin-top: 20px;
+    }
+    .payment-options h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #001F3F;
+    }
+    .payment-options label {
+      display: block;
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    .checkout-total {
+      margin-top: 15px;
+      text-align: right;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .checkout-btn {
+      display: block;
+      width: 62%;
+      margin: 20px auto;
+      background: #FF851B;
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .checkout-btn:hover { background: #FF6300; }
+
+    footer {
+      width: 100%;
+      background: #001F3F;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+    }
+    footer a {
+      color: #fff;
+      font-size: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    footer i {
+      font-size: 22px;
+      transition: .2s;
+    }
+    footer a:hover i {
+      transform: scale(1.2);
+      color: #FF7F50;
+    }
+
+    .ewallet-suboptions {
+      display: none;
+      margin-left: 25px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo">
+    <h2>Checkout</h2>
+    <div class="icons">
+      <a href="cart.html" title="Back to Cart"><i class="fas fa-arrow-left"></i></a>
+    </div>
+  </header>
+
+  <div class="checkout-container">
+    <h2>Checkout Details</h2>
+
+    <!-- Buyer Info -->
+    <div class="buyer-info">
+      <div class="buyer-row">
+        <span id="display-name"></span>
+        <input type="text" id="buyer-name">
+        <button onclick="editField('name')"><i class="fas fa-pencil-alt"></i> Edit</button>
+      </div>
+      <div class="buyer-row">
+        <span id="display-campus"></span>
+        <input type="text" id="buyer-campus">
+        <button onclick="editField('campus')"><i class="fas fa-pencil-alt"></i> Edit</button>
+      </div>
+    </div>
+
+    <h3>Your Items</h3>
+    <div id="checkout-items"></div>
+
+    <div class="checkout-total">
+      <p>Total: ₱<span id="checkout-total">0.00</span></p>
+    </div>
+
+    <!-- Payment Options (unchanged) -->
+    <div class="payment-options">
+      <h3>Payment Options</h3>
+      <label><input type="radio" name="payment" value="Cash"> Cash</label>
+      <label><input type="radio" name="payment" value="EWallet" id="ewallet-option"> E-Wallet</label>
+    </div>
+
+    <!-- Sub-options for E-Wallet -->
+    <div id="ewallet-suboptions">
+      <label><input type="radio" name="ewallet" value="GCash" id="gcash-option"> GCash</label>
+      <label><input type="radio" name="ewallet" value="Maya" id="maya-option"> Maya</label>
+    </div>
+
+    <!-- Checkout Button -->
+    <button class="checkout-btn" onclick="placeOrder()">Place Order</button>
+  </div>
+
+  <footer>
+    <a href="scan.html"><i class="fas fa-qrcode"></i><span>Scan</span></a>
+    <a href="chat.html"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
+    <a href="homepage.html"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="alerts.html"><i class="fas fa-bell"></i><span>Alerts</span></a>
+    <a href="bag.html"><i class="fas fa-bag-shopping"></i><span>Bag</span></a>
+  </footer>
+
+  <script>
+    // Load buyer info automatically from localStorage (data saved at login/homepage)
+    function loadBuyerInfo() {
+      const userName = localStorage.getItem("loggedInUserName") || localStorage.getItem("userName") || "N/A";
+      const userCampus = localStorage.getItem("loggedInUserCampus") || localStorage.getItem("userCampus") || "N/A";
+
+      document.getElementById("display-name").innerText = userName;
+      document.getElementById("buyer-name").value = userName;
+
+      document.getElementById("display-campus").innerText = userCampus;
+      document.getElementById("buyer-campus").value = userCampus;
+    }
+
+    function editField(field) {
+      const span = document.getElementById(`display-${field}`);
+      const input = document.getElementById(`buyer-${field}`);
+      if (input.style.display === "none" || input.style.display === "") {
+        input.style.display = "inline-block";
+        span.style.display = "none";
+        input.focus();
+      } else {
+        span.innerText = input.value.trim() || span.innerText;
+        input.style.display = "none";
+        span.style.display = "inline-block";
+      }
+    }
+
+    function renderCheckout() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const checkoutItemsContainer = document.getElementById("checkout-items");
+      let checkoutTotal = 0;
+
+      checkoutItemsContainer.innerHTML = "";
+      cart.forEach(item => {
+        const price = parseFloat(item.price.toString().replace(/[^0-9.-]+/g, "")) || 0;
+        checkoutTotal += price * item.qty;
+        const div = document.createElement("div");
+        div.classList.add("checkout-item");
+        div.innerHTML = `
+          <div class="item-details">
+            <img src="${item.img}" alt="${item.name}">
+            <div class="item-info">
+              <h4>${item.name}</h4>
+              <p>₱${price.toFixed(2)} x ${item.qty}</p>
+            </div>
+          </div>
+          <p><b>₱${(price * item.qty).toFixed(2)}</b></p>
+        `;
+        checkoutItemsContainer.appendChild(div);
+      });
+
+      document.getElementById("checkout-total").innerText = checkoutTotal.toFixed(2);
+    }
+
+    function placeOrder() {
+      const name = document.getElementById("display-name").innerText.trim();
+      const campus = document.getElementById("display-campus").innerText.trim();
+      const paymentInput = document.querySelector('input[name="payment"]:checked');
+      if (!paymentInput) {
+        alert("Please select a payment method.");
+        return;
+      }
+      const payment = paymentInput.value;
+      alert(`Order placed!\nName: ${name}\nCampus: ${campus}\nPayment: ${payment}`);
+      localStorage.removeItem("cart");
+      window.location.href = "thankyoupage.html";
+    }
+
+    // E-Wallet toggle (unchanged)
+    const ewalletOption = document.getElementById("ewallet-option");
+    const ewalletSuboptions = document.getElementById("ewallet-suboptions");
+    document.querySelectorAll('input[name="payment"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        ewalletSuboptions.style.display = ewalletOption.checked ? "block" : "none";
+      });
+    });
+
+    // Initialize page
+    loadBuyerInfo();
+    renderCheckout();
+  </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uniforms</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #333;
+    }
+
+    /* Header Bar */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2C2C54;
+      color: white;
+      padding: 12px 15px;
+      border-bottom: 4px solid transparent;
+      position: relative;
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -4px;
+      height: 4px;
+      background: linear-gradient(to bottom, white 2px, transparent 2px, transparent 4px, white 4px);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    .back-btn i {
+      color: #F4A300;
+      font-size: 20px;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .header-icons a {
+      color: white;
+      font-size: 20px;
+      text-decoration: none;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product-card {
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .image-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 1px solid #333;
+      border-radius: 10px;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-name {
+      margin: 8px 0 2px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .price {
+      color: #555;
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .rating {
+      font-size: 13px;
+      color: #555;
+    }
+
+    .rating i {
+      color: #FFB400;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <a href="homepage.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+      <span class="header-title">UNIFORMS</span>
+    </div>
+    <div class="header-icons">
+      <a href="#"><i class="fas fa-search"></i></a>
+      <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+    </div>
+  </header>
+
+  <!-- Products -->
+  <section class="product-grid">
+    <div class="product-card" onclick="goToProduct('School Uniform', 950, 'uniform1.jpg')">
+      <div class="image-box">
+        <img src="uniform1.jpg" alt="School Uniform">
+      </div>
+      <p class="product-name">School Uniform</p>
+      <span class="price">₱950.00</span>
+      <p class="rating"><i class="fas fa-star"></i> 0.0 | 0 sold</p>
+    </div>
+
+    <div class="product-card" onclick="goToProduct('P.E. Uniform', 800, 'uniform2.jpg')">
+      <div class="image-box">
+        <img src="uniform2.jpg" alt="P.E. Uniform">
+      </div>
+      <p class="product-name">P.E. Uniform</p>
+      <span class="price">₱800.00</span>
+      <p class="rating"><i class="fas fa-star"></i> 0.0 | 0 sold</p>
+    </div>
+  </section>
+
+  <script>
+    function goToProduct(name, price, img) {
+      window.location.href = `product-details-uniform.html?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&img=${encodeURIComponent(img)}`;
+    }
+  </script>
+</body>
+</html>

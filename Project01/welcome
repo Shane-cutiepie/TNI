@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .welcome-box {
+    background: #fff;
+    padding: 40px 60px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  h1 {
+    color: #001F3F;
+    margin-bottom: 10px;
+  }
+  p {
+    color: #FF7F50;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  button {
+    padding: 12px 24px;
+    background: #001F3F;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: #FF7F50;
+  }
+</style>
+</head>
+<body>
+  <div class="welcome-box">
+    <h1>Welcome to Tindahan ni Isko</h1>
+    <p>Your one-stop campus shop!</p>
+    <button onclick="location.href='homepage.html'">Continue</button>
+  </div>
+</body>
+</html>

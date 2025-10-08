@@ -1,0 +1,150 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trending Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body { margin:0; font-family:'Poppins',sans-serif; background:#f1f1f1; color:#333; }
+
+    /* 🔹 Header */
+    header { 
+      display:flex; 
+      justify-content:space-between; 
+      align-items:center; 
+      background:#2C2C54; 
+      color:#fff; 
+      padding:12px 15px; 
+    }
+    .header-left { display:flex; align-items:center; gap:10px; }
+    .back-btn { 
+      background:white; 
+      border-radius:50%; 
+      width:36px; 
+      height:36px; 
+      display:flex; 
+      justify-content:center; 
+      align-items:center; 
+      cursor:pointer; 
+    }
+    .back-btn i { color:#2C2C54; font-size:18px; }
+    .header-title { font-size:16px; font-weight:600; }
+    .header-icons { display:flex; gap:15px; }
+    .header-icons a { color:white; font-size:18px; text-decoration:none; }
+
+    h2 { color:#001F3F; margin:20px 15px; }
+    .products { display:grid; grid-template-columns:repeat(2,1fr); gap:15px; padding:0 15px 80px; }
+    .product { background:#fff; border-radius:12px; padding:10px; box-shadow:0 2px 5px rgba(0,0,0,.1); text-align:center; cursor:pointer; transition:.2s; }
+    .product:hover { transform:scale(1.02); }
+    .product img { width:100%; aspect-ratio:1/1; border-radius:10px; object-fit:cover; }
+    .product h3 { font-size:16px; margin:10px 0 5px; color:#001F3F; }
+    .product p { margin:0; font-weight:600; color:#FF7F50; }
+    .meta { font-size:12px; color:#777; margin-top:4px; }
+
+    footer { position:fixed; bottom:0; width:100%; background:#001F3F; display:flex; justify-content:space-around; padding:8px 0; }
+    footer a { color:#fff; font-size:12px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:3px; }
+    footer i { font-size:22px; transition:.2s; }
+    footer a:hover i { transform:scale(1.2); color:#FF7F50; }
+  </style>
+</head>
+<body>
+
+  <!-- 🔹 Header -->
+  <header>
+    <div class="header-left">
+      <div class="back-btn" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+      </div>
+      <span class="header-title">Hot & Trending</span>
+    </div>
+    <div class="header-icons">
+      <a href="homepage.html"><i class="fas fa-home"></i></a>
+      <a href="bag.html"><i class="fas fa-shopping-bag"></i></a>
+    </div>
+  </header>
+
+  <h2>🔥 Trending Products</h2>
+  <div class="products">
+    <!-- Product 1: Uniform -->
+    <div class="product" onclick="goToProduct('uniform','School Uniform',950,'uniform1.jpg')">
+      <img src="uniform1.jpg" alt="School Uniform">
+      <h3>School Uniform</h3>
+      <p>₱950</p>
+      <div class="meta">⭐ | 0 sold</div>
+    </div>
+
+    <!-- Product 2: Plates -->
+    <div class="product" onclick="goToProduct('plates','Seal & Plate',100,'seals1.jpg')">
+      <img src="seals1.jpg" alt="Seal & Plate">
+      <h3>Seal & Plate</h3>
+      <p>₱100</p>
+      <div class="meta">⭐| 0 sold</div>
+    </div>
+
+    <!-- Product 3: Lanyard -->
+    <div class="product" onclick="goToProduct('lanyard','Blue Lanyard',120,'lanyard1.jpg')">
+      <img src="lanyard1.jpg" alt="Blue Lanyard">
+      <h3>Blue Lanyard</h3>
+      <p>₱120</p>
+      <div class="meta">⭐ | 0 sold</div>
+    </div>
+
+    <!-- Product 4: Accessories -->
+    <div class="product" onclick="goToProduct('accessories','BU Shirt est. 1969',300,'accessories1.jpg')">
+      <img src="accessories1.jpg" alt="BU Shirt est. 1969">
+      <h3>BU Shirt est. 1969</h3>
+      <p>₱300</p>
+      <div class="meta">⭐| 0 sold</div>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="product" onclick="goToProduct('accessories','Tatak Bueño Cap',200,'accessories2.jpg')">
+      <img src="accessories2.jpg" alt="Tatak Bueño Cap">
+      <h3>Tatak Bueño Cap</h3>
+      <p>₱200</p>
+      <div class="meta">⭐| 0 sold</div>
+    </div>
+
+    <!-- Product 6 -->
+    <div class="product" onclick="goToProduct('accessories','BU Keychain',100,'accessories3.jpg')">
+      <img src="accessories3.jpg" alt="BU Keychain">
+      <h3>BU Keychain</h3>
+      <p>₱100</p>
+      <div class="meta">⭐| 0 sold</div>
+    </div>
+
+    <!-- Product 7 -->
+    <div class="product" onclick="goToProduct('accessories','Pin',120,'accessories4.jpg')">
+      <img src="accessories4.jpg" alt="Pin">
+      <h3>Pin</h3>
+      <p>₱120</p>
+      <div class="meta">⭐ | 0 sold</div>
+    </div>
+  </div>
+
+  <!-- 🔹 Footer -->
+  <footer>
+    <a href="scan.html"><i class="fas fa-qrcode"></i><span>Scan</span></a>
+    <a href="chat.html"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
+    <a href="homepage.html"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="alerts.html"><i class="fas fa-bell"></i><span>Alerts</span></a>
+    <a href="bag.html"><i class="fas fa-bag-shopping"></i><span>Bag</span></a>
+  </footer>
+
+  <script>
+    function goToProduct(category, name, price, img) {
+      let page = "";
+      if (category === "uniform") page = "product-details-uniform.html";
+      if (category === "plates") page = "product-details-plates.html";
+      if (category === "lanyard") page = "product-details-lanyard.html";
+      if (category === "accessories") page = "product-details-accessories.html";
+
+      // Send data via query string
+      window.location.href = `${page}?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&img=${encodeURIComponent(img)}&rating=5&sold=0`;
+    }
+  </script>
+</body>
+</html>
